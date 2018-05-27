@@ -1,0 +1,2 @@
+# BizApplication.Core
+(In development) 
