@@ -5,4 +5,5 @@ BizApplication.Core.Data/bin/
 BizApplication.Core.Data/obj/
 ConsoleApp/bin/
 ConsoleApp/obj/
-
+BizApplication.Core.Test.Common/bin/
+BizApplication.Core.Test.Common/obj/
