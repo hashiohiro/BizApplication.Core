@@ -18,6 +18,11 @@ namespace BizApplication.Core.Common.Dynamic
         {
             var type = target?.GetType();
 
+            if (ReferenceEquals(type, null))
+            {
+                return null;
+            }
+
             if (NoCache(type.AssemblyQualifiedName))
             {
                 AddOrUpdateCache(type.AssemblyQualifiedName, new ClassInfo(type.Name));
@@ -29,15 +34,22 @@ namespace BizApplication.Core.Common.Dynamic
         public IList<Property> GetProperties(object target)
         {
             var type = GetType(target);
+
+            if (ReferenceEquals(type, null))
+            {
+                return null;
+            }
+
             var cache = GetCache(type.AssemblyQualifiedName);
+
+
 
             if (NoCacheProperties(cache))
             {
                 cache.Properties = type.GetProperties()
                                        .Select(x => new Property(
                                            x.Name,
-                                           Type.GetTypeCode(x.PropertyType
-                                        ))).ToArray();
+                                           x.PropertyType)).ToArray();
             }
 
             return cache.Properties;
@@ -45,6 +57,16 @@ namespace BizApplication.Core.Common.Dynamic
 
         public object GetPropertyValue(object target, string propertyName)
         {
+            if (ReferenceEquals(target, null))
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            if (ReferenceEquals(propertyName, null))
+            {
+                throw new ArgumentNullException(nameof(propertyName));
+            }
+
             // TODO : ILで高速化する
             //var cache = GetProperties(target).FirstOrDefault(x => x.Name == propertyName);
             //return (target as dynamic)[cache.Name];
@@ -54,6 +76,16 @@ namespace BizApplication.Core.Common.Dynamic
 
         public void SetPropertyValue(object target, string propertyName, object value)
         {
+            if (ReferenceEquals(target, null))
+            {
+                throw new ArgumentNullException(nameof(target));
+            }
+
+            if (ReferenceEquals(propertyName, null))
+            {
+                throw new ArgumentNullException(nameof(propertyName));
+            }
+
             // TODO : ILで高速化する
             //var cache = GetProperties(target).FirstOrDefault(x => x.Name == propertyName);
             //(target as dynamic)[cache.Name] = value;
@@ -63,11 +95,20 @@ namespace BizApplication.Core.Common.Dynamic
 
         public object CreateInstance(Type type)
         {
+            if (ReferenceEquals(type, null))
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
             return Activator.CreateInstance(type);
         }
 
         public object CreateInstance(Type type, params object[] args)
         {
+            if (ReferenceEquals(type, null))
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
             return Activator.CreateInstance(type, args);
         }
 
