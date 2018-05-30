@@ -9,13 +9,13 @@ namespace BizApplication.Core.Common.Dynamic
     /// </summary>
     public class Property
     {
-        public Property(string name, TypeCode type)
+        public Property(string name, Type type)
         {
             Name = name;
             Type = type;
         }
         public string Name { get; private set; }
-        public TypeCode Type { get; private set; }
+        public Type Type { get; private set; }
 
         public object GetValue()
         {
