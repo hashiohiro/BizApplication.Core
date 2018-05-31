@@ -9,9 +9,9 @@ namespace BizApplication.Core.Common.CoreContainer
     /// <summary>
     /// A table that maps abstract types and dependencies.
     /// </summary>
-    public sealed class DependentMappingTable
+    public sealed class DependencyMappingTable
     {
-        public DependentMappingTable()
+        public DependencyMappingTable()
         {
             _innerTable = new Dictionary<string, IList<DependencyMapping>>();
             CanRegister = true;
