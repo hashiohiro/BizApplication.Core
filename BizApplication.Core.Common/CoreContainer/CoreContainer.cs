@@ -20,7 +20,7 @@ namespace BizApplication.Core.Common.CoreContainer
 
         public void Register(Type abstractType, Type concreteType, CoreContainerObjectLifeTimes objectLifeTime, int priority = 0)
         {
-            mappingTable.AddDependent(abstractType.AssemblyQualifiedName, concreteType.AssemblyQualifiedName, objectLifeTime, priority);
+            mappingTable.AddDependency(abstractType.AssemblyQualifiedName, concreteType.AssemblyQualifiedName, objectLifeTime, priority);
         }
 
         public void Register<TAbstract, TConcrete>(CoreContainerObjectLifeTimes lifeTimes, int priority = 0)
@@ -57,7 +57,7 @@ namespace BizApplication.Core.Common.CoreContainer
 
         public object Resolve(Type abstractType, params object[] args)
         {
-            var dm = mappingTable.GetDependentMapping(abstractType.AssemblyQualifiedName);
+            var dm = mappingTable.GetDependencyMapping(abstractType.AssemblyQualifiedName);
 
             if (args.Length == 0)
             {

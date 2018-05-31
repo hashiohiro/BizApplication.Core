@@ -13,62 +13,62 @@ namespace BizApplication.Core.Common.CoreContainer
     {
         public DependentMappingTable()
         {
-            _innerTable = new Dictionary<string, IList<DependentMapping>>();
+            _innerTable = new Dictionary<string, IList<DependencyMapping>>();
             CanRegister = true;
         }
 
         public bool CanRegister { get; private set; }
 
-        private IDictionary<string, IList<DependentMapping>> _innerTable;
+        private IDictionary<string, IList<DependencyMapping>> _innerTable;
 
-        public DependentMapping GetDependentMapping(string abstractTypeName)
+        public DependencyMapping GetDependencyMapping(string abstractTypeName)
         {
             if (!IsCompletedConstructionMappingTable())
             {
                 throw new InvalidOperationException("It is necessary to build the mapping table");
             }
-            return GetDependents(abstractTypeName).FirstOrDefault();          
+            return GetDependencies(abstractTypeName).FirstOrDefault();          
         }
 
-        public DependentMapping GetDependentMapping(string abstractTypeName, string concreteTypeName)
+        public DependencyMapping GetDependencyMapping(string abstractTypeName, string concreteTypeName)
         {
             if (!IsCompletedConstructionMappingTable())
             {
                 throw new InvalidOperationException("It is necessary to build the mapping table");
             }
-            return GetDependents(abstractTypeName).FirstOrDefault(x => x.ConcreteTypeName == concreteTypeName);          
+            return GetDependencies(abstractTypeName).FirstOrDefault(x => x.ConcreteTypeName == concreteTypeName);          
         }
 
-        public DependentMapping GetDependentMapping(string abstractTypeName, int resolvePriority = 0)
+        public DependencyMapping GetDependencyMapping(string abstractTypeName, int resolvePriority = 0)
         {
             if (!IsCompletedConstructionMappingTable())
             {
                 throw new InvalidOperationException("It is necessary to build the mapping table");
             }
-            return GetDependents(abstractTypeName).FirstOrDefault(x => x.ResolvePriority == resolvePriority);          
+            return GetDependencies(abstractTypeName).FirstOrDefault(x => x.ResolvePriority == resolvePriority);          
         }
 
-        public void AddDependent(string abstractTypeName, string concreteTypeName, CoreContainerObjectLifeTimes objectLifeTime, int resolvePriority = 0)
+        public void AddDependency(string abstractTypeName, string concreteTypeName, CoreContainerObjectLifeTimes objectLifeTime, int resolvePriority = 0)
         {
             if (IsCompletedConstructionMappingTable())
             {
                 throw new InvalidOperationException("Mapping can not be added after mapping table is built");
             }
 
-            var d = new DependentMapping(abstractTypeName, concreteTypeName, objectLifeTime, resolvePriority);
+            var d = new DependencyMapping(abstractTypeName, concreteTypeName, objectLifeTime, resolvePriority);
 
             if (IsExistAbstractTypeName(abstractTypeName))
             {
-                var dependents = GetDependents(abstractTypeName);
-                dependents.Add(d);
-                dependents = dependents.OrderByDescending(x => x.ResolvePriority).ToList();
+                var dependencies = GetDependencies(abstractTypeName);
+                dependencies.Add(d);
+                dependencies = dependencies.OrderByDescending(x => x.ResolvePriority).ToList();
             } else
             {
                 AddAbstractType(abstractTypeName, d);
             }
         }
 
-        public void RemoveDependent(string abstractTypeName, string concreteTypeName)
+        public void RemoveDependency(string abstractTypeName, string concreteTypeName)
         {
             if (IsCompletedConstructionMappingTable())
             {
@@ -80,11 +80,11 @@ namespace BizApplication.Core.Common.CoreContainer
                 throw new InvalidOperationException("No Exist abstract type");
             }
 
-            var dependents = GetDependents(abstractTypeName);
-            dependents.Remove(GetDependentMapping(abstractTypeName, concreteTypeName));
+            var dependencies = GetDependencies(abstractTypeName);
+            dependencies.Remove(GetDependencyMapping(abstractTypeName, concreteTypeName));
         }
 
-        public void RemoveDependent(string abstractTypeName, int resolvePriority = 0)
+        public void RemoveDependency(string abstractTypeName, int resolvePriority = 0)
         {
             if (IsCompletedConstructionMappingTable())
             {
@@ -96,13 +96,13 @@ namespace BizApplication.Core.Common.CoreContainer
                 throw new InvalidOperationException("No Exist abstract type");
             }
 
-            var dependents = GetDependents(abstractTypeName);
-            dependents.Remove(GetDependentMapping(abstractTypeName, resolvePriority));
+            var dependencies = GetDependencies(abstractTypeName);
+            dependencies.Remove(GetDependencyMapping(abstractTypeName, resolvePriority));
         }
 
         public void Build()
         {
-            var dict = new Dictionary<string, IList<DependentMapping>>();
+            var dict = new Dictionary<string, IList<DependencyMapping>>();
 
             foreach (var m in _innerTable)
             {
@@ -131,8 +131,8 @@ namespace BizApplication.Core.Common.CoreContainer
         /// <returns>Returns true if an concrete type exists, false otherwise</returns>
         private bool IsExistConcreteTypeName(string abstractTypeName, string concreteTypeName)
         {
-            var dependents = GetDependents(abstractTypeName);
-            return dependents.Any(x => x.ConcreteTypeName == concreteTypeName);
+            var dependencies = GetDependencies(abstractTypeName);
+            return dependencies.Any(x => x.ConcreteTypeName == concreteTypeName);
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace BizApplication.Core.Common.CoreContainer
         /// </summary>
         /// <param name="abstractTypeName">Abstract type name</param>
         /// <returns>Dependency list</returns>
-        private IList<DependentMapping> GetDependents(string abstractTypeName)
+        private IList<DependencyMapping> GetDependencies(string abstractTypeName)
         {
             return _innerTable[abstractTypeName];
         }
@@ -149,10 +149,10 @@ namespace BizApplication.Core.Common.CoreContainer
         /// Add an abstract type.
         /// </summary>
         /// <param name="abstractTypeName">Abstract type name</param>
-        /// <param name="dependent">Dependent</param>
-        private void AddAbstractType(string abstractTypeName, DependentMapping dependent)
+        /// <param name="dependency">Dependency</param>
+        private void AddAbstractType(string abstractTypeName, DependencyMapping dependency)
         {
-            _innerTable[abstractTypeName] = new List<DependentMapping>() { dependent };
+            _innerTable[abstractTypeName] = new List<DependencyMapping>() { dependency };
         }
 
         /// <summary>
@@ -164,9 +164,9 @@ namespace BizApplication.Core.Common.CoreContainer
             return !CanRegister;
         }
     }
-    public class DependentMapping
+    public class DependencyMapping
     {
-        public DependentMapping(string abstractTypeName, string concreteTypeName, CoreContainerObjectLifeTimes lifetime, int resolvePriority = 0)
+        public DependencyMapping(string abstractTypeName, string concreteTypeName, CoreContainerObjectLifeTimes lifetime, int resolvePriority = 0)
         {
             AbstractTypeName = abstractTypeName;
             ConcreteTypeName = concreteTypeName;
