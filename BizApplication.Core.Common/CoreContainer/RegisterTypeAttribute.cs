@@ -10,7 +10,7 @@ namespace BizApplication.Core.Common.CoreContainer
     {
         public RegisterTypeAttribute(
             Type abstractType,
-            CoreContainerObjectLifeTimes objectLifeTimes = CoreContainerObjectLifeTimes.Transient,
+            ObjectLifeTimes objectLifeTimes = ObjectLifeTimes.Transient,
             int priority = 0)
         {
             AbstractType = abstractType;
@@ -19,7 +19,7 @@ namespace BizApplication.Core.Common.CoreContainer
         }
 
         public Type AbstractType { get; set; }
-        public CoreContainerObjectLifeTimes ObjectLifeTime { get; set; }
+        public ObjectLifeTimes ObjectLifeTime { get; set; }
         public int Priority { get; set; }
     }
 }

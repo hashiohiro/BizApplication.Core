@@ -27,7 +27,7 @@ namespace BizApplication.Core.Common.CoreContainer
             {
                 throw new InvalidOperationException("It is necessary to build the mapping table");
             }
-            return GetDependencies(abstractTypeName).FirstOrDefault();          
+            return GetDependencies(abstractTypeName).FirstOrDefault();
         }
 
         public DependencyMapping GetDependencyMapping(string abstractTypeName, string concreteTypeName)
@@ -36,7 +36,7 @@ namespace BizApplication.Core.Common.CoreContainer
             {
                 throw new InvalidOperationException("It is necessary to build the mapping table");
             }
-            return GetDependencies(abstractTypeName).FirstOrDefault(x => x.ConcreteTypeName == concreteTypeName);          
+            return GetDependencies(abstractTypeName).FirstOrDefault(x => x.ConcreteTypeName == concreteTypeName);
         }
 
         public DependencyMapping GetDependencyMapping(string abstractTypeName, int resolvePriority = 0)
@@ -45,10 +45,10 @@ namespace BizApplication.Core.Common.CoreContainer
             {
                 throw new InvalidOperationException("It is necessary to build the mapping table");
             }
-            return GetDependencies(abstractTypeName).FirstOrDefault(x => x.ResolvePriority == resolvePriority);          
+            return GetDependencies(abstractTypeName).FirstOrDefault(x => x.ResolvePriority == resolvePriority);
         }
 
-        public void AddDependency(string abstractTypeName, string concreteTypeName, CoreContainerObjectLifeTimes objectLifeTime, int resolvePriority = 0)
+        public void AddDependency(string abstractTypeName, string concreteTypeName, ObjectLifeTimes objectLifeTime, int resolvePriority = 0)
         {
             if (IsCompletedConstructionMappingTable())
             {
@@ -106,7 +106,7 @@ namespace BizApplication.Core.Common.CoreContainer
 
             foreach (var m in _innerTable)
             {
-                dict[m.Key] = _innerTable[m.Key].OrderByDescending(x => x.ResolvePriority).ToList();          
+                dict[m.Key] = _innerTable[m.Key].OrderByDescending(x => x.ResolvePriority).ToList();
             }
 
             _innerTable = dict;
@@ -163,20 +163,5 @@ namespace BizApplication.Core.Common.CoreContainer
         {
             return !CanRegister;
         }
-    }
-    public class DependencyMapping
-    {
-        public DependencyMapping(string abstractTypeName, string concreteTypeName, CoreContainerObjectLifeTimes lifetime, int resolvePriority = 0)
-        {
-            AbstractTypeName = abstractTypeName;
-            ConcreteTypeName = concreteTypeName;
-            ObjectLifeTime = lifetime;
-            ResolvePriority = resolvePriority;
-        }
-
-        public string AbstractTypeName { get; private set; }
-        public string ConcreteTypeName { get; private set; }
-        public CoreContainerObjectLifeTimes ObjectLifeTime { get; private set; }
-        public int ResolvePriority { get; private set; }
     }
 }

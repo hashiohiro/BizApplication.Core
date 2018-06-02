@@ -9,10 +9,10 @@ namespace BizApplication.Core.Common.Dynamic
     {
         public DynamicCodeHelper()
         {
-            _cachedMetaInfoDict = new Dictionary<string, ClassInfo>();
+            _cachedClassInfoDict = new Dictionary<string, ClassInfo>();
         }
 
-        private IDictionary<string, ClassInfo> _cachedMetaInfoDict;
+        private IDictionary<string, ClassInfo> _cachedClassInfoDict;
 
         public Type GetType(object target)
         {
@@ -134,7 +134,7 @@ namespace BizApplication.Core.Common.Dynamic
                 throw new ArgumentNullException("There is not cache");
             }
 
-            return _cachedMetaInfoDict[className];
+            return _cachedClassInfoDict[className];
         }
 
         private void AddOrUpdateCache(string className, ClassInfo cachedMetaInfo)
@@ -149,7 +149,7 @@ namespace BizApplication.Core.Common.Dynamic
                 throw new ArgumentNullException($"Argument is null");
             }
 
-            _cachedMetaInfoDict.Add(className, cachedMetaInfo);
+            _cachedClassInfoDict.Add(className, cachedMetaInfo);
         }
 
         private void RemoveCache(string className)
@@ -158,7 +158,7 @@ namespace BizApplication.Core.Common.Dynamic
             {
                 throw new ArgumentNullException($"Argument is null");
             }
-            _cachedMetaInfoDict.Remove(className);
+            _cachedClassInfoDict.Remove(className);
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace BizApplication.Core.Common.Dynamic
         /// <returns>Returns true if it is not cached, false otherwise</returns>
         private bool NoCache(string className)
         {
-            return !_cachedMetaInfoDict.ContainsKey(className);
+            return !_cachedClassInfoDict.ContainsKey(className);
         }
 
         /// <summary>

@@ -1,5 +1,6 @@
 ﻿using BizApplication.Core.Common.CoreContainer;
 using BizApplication.Core.Common.CoreIF;
+using BizApplication.Core.Common.Date;
 using BizApplication.Core.Common.Dynamic;
 using System;
 using System.Collections.Generic;
@@ -18,14 +19,14 @@ namespace SimpleApp
             helper.SetPropertyValue(agg, nameof(ILPropertyAggregateTest.Id), 99);
 
             // Core Container
-            var container = new CoreContainer(helper);
+            var container = new CoreContainer(new CoreInstanceCache(new DateTimeService()), new DynamicCodeHelper());
             container.RegisterByCustomAttribute(Assembly.Load("ConsoleApp"), typeof(RegisterTypeAttribute));
             container.Build();
             var obj = container.Resolve(typeof(ILPropertyAggregateTest));
         }
     }
 
-    [RegisterType(typeof(ILPropertyAggregateTest), CoreContainerObjectLifeTimes.Transient, 0)]
+    [RegisterType(typeof(ILPropertyAggregateTest), ObjectLifeTimes.Transient, 0)]
     public class ILPropertyAggregateTest
     {
         public int Id { get; set; }
@@ -42,7 +43,7 @@ namespace SimpleApp
         }
     }
 
-    [RegisterType(typeof(ILPropertyAggregateTest), CoreContainerObjectLifeTimes.Transient, 1)]
+    [RegisterType(typeof(ILPropertyAggregateTest), ObjectLifeTimes.Transient, 1)]
     public class ILPropertyAggregateTest2 : ILPropertyAggregateTest
     {
         public string Test2 { get; set; }

@@ -18,7 +18,7 @@ namespace BizApplication.Core.Common.CoreIF
         /// <param name="concreteType">Concrete type</param>
         /// <param name="lifeTimes">Life time</param>
         /// <param name="priority">Resolve Priority</param>
-        void Register(Type abstractType, Type concreteType, CoreContainerObjectLifeTimes lifeTimes, int priority = 0);
+        void Register(Type abstractType, Type concreteType, ObjectLifeTimes lifeTimes, int priority = 0);
 
         /// <summary>
         /// Register correspondence between abstract type and concrete type.
@@ -27,7 +27,7 @@ namespace BizApplication.Core.Common.CoreIF
         /// <typeparam name="TConcrete">Concrete type</typeparam>
         /// <param name="lifeTimes">Object Life time</param>
         /// <param name="priority">Resolve Priority</param>
-        void Register<TAbstract, TConcrete>(CoreContainerObjectLifeTimes lifeTimes, int priority = 0)
+        void Register<TAbstract, TConcrete>(ObjectLifeTimes lifeTimes, int priority = 0)
             where TAbstract : class
             where TConcrete : class;
 
@@ -41,10 +41,9 @@ namespace BizApplication.Core.Common.CoreIF
         /// <summary>
         /// Register correspondence between abstract type and concrete type based on Export attribute.
         /// </summary>
-        /// <typeparam name="TAttribute"></typeparam>
-        /// <param name="lifeTimes">Object Life time</param>
-        /// <param name="priority">Resolve Priority</param>
-        void RegisterByCustomAttributes<TAttribute>(CoreContainerObjectLifeTimes lifeTimes, int priority = 0) where TAttribute : Attribute;
+        /// <typeparam name="TAttribute">Attribute Type<</typeparam>
+        /// <param name="baseSearchAssembly">Base search assembly</param>
+        void RegisterByCustomAttributes<TAttribute>(Assembly baseSearchAssembly) where TAttribute : Attribute;
 
         /// <summary>
         /// Resolve a concrete type from the abstract type.
@@ -69,7 +68,7 @@ namespace BizApplication.Core.Common.CoreIF
         void Build();
     }
 
-    public enum CoreContainerObjectLifeTimes
+    public enum ObjectLifeTimes
     {
         // Always create new objects
         Transient,
