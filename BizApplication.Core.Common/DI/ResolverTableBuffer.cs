@@ -17,6 +17,16 @@ namespace BizApplication.Core.Common.DI
         }
 
         private IDictionary<Type, ResolverConfig> dict;
+        private bool isCompiled;
+
+        public bool IsCompiled
+        {
+            get
+            {
+                return isCompiled;
+            }
+        }
+
 
         public void Add(Type abstractType, ResolverConfig resolverConfig)
         {
@@ -30,6 +40,7 @@ namespace BizApplication.Core.Common.DI
             {
                 pair.Value.FactoryMethod = () => Activator.CreateInstance(pair.Value.ConcreteType);
             }
+            isCompiled = true;
         }
 
         [Obsolete("In order to improve the reference speed of ResolverConfig you should use Resolver's method")]

@@ -31,7 +31,6 @@ namespace BizApplication.Core.Common.DI
             this.resolverTable = resolverTable;
         }
         private IResolverTable resolverTable;
-        private bool isCompiled;
 
         /// <summary>
         /// Register the dependency.
@@ -67,7 +66,7 @@ namespace BizApplication.Core.Common.DI
         {
             AssertUtil.AssertNotNull(abstractType);
 
-            if (!isCompiled)
+            if (!resolverTable.IsCompiled)
             {
                 throw new ContainerException("The Resolver Table must be precompiled");
             }
@@ -99,7 +98,6 @@ namespace BizApplication.Core.Common.DI
                 throw new ContainerException("Unusual settings found in Resolver table.");
             }
             resolverTable.Compile();
-            isCompiled = true;
         }
 
         /// <summary>
@@ -107,7 +105,7 @@ namespace BizApplication.Core.Common.DI
         /// </summary>
         private void CheckNotCompiled()
         {
-            if (isCompiled)
+            if (resolverTable.IsCompiled)
             {
                 throw new ContainerException("Resolver table has already been compiled.");
             }

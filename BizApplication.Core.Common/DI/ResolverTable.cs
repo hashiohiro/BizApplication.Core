@@ -24,9 +24,20 @@ namespace BizApplication.Core.Common.DI
             {
                 Add(pair.Key, pair.Value);
             }
+
+            isCompiled = resolverTable.IsCompiled;
+        }
+
+        public bool IsCompiled
+        {
+            get
+            {
+                return isCompiled;
+            }
         }
 
         private Hashtuple[][] _innerTable;
+        private bool isCompiled;
 
         public void Add(Type abstractType, ResolverConfig resolverConfig)
         {
@@ -125,6 +136,7 @@ namespace BizApplication.Core.Common.DI
                     t.resolverConfig.FactoryMethod = (Func<object>)factoryMethod.CreateDelegate(typeof(Func<object>));
                 }
             }
+            isCompiled = true;
         }
 
         private void EmitNewObj(ResolverConfig resolverConfig, ILGenerator il)
@@ -133,7 +145,6 @@ namespace BizApplication.Core.Common.DI
             {
                 throw new ContainerException("Primitive types are not supported");
             }
-            // TODO : プリミティブ型は対応しない
             var ctorParams = resolverConfig.Constructor.GetParameters();
             {
                 foreach (var p in ctorParams)

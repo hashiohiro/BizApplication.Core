@@ -8,6 +8,12 @@ namespace BizApplication.Core.Common.CoreIF
     public interface IResolverTable
     {
         /// <summary>
+        /// Get compiled flag
+        /// Returns true if compiled, false otherwise
+        /// </summary>
+        bool IsCompiled { get; }
+
+        /// <summary>
         /// Add a resolve configuration.
         /// </summary>
         /// <param name="abstractType">Abstract type</param>
