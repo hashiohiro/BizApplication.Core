@@ -14,7 +14,8 @@ namespace SimpleApp
             container.Register<InnerParts1_2, InnerParts1_2>();
             container.Register<InnerTest2, InnerTest2>();
             container.Compile();
-            var test = container.Resolve<Test>();
+            var instance = container.Resolve<Test>();
+            var lazyInstance = container.LazyResolve<Test>();
         }
     }
 

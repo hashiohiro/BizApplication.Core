@@ -1,12 +1,11 @@
-﻿using BizApplication.Core.Common.CoreIF;
-using BizApplication.Core.Common.Error;
-using BizApplication.Core.Common.Util;
-using System;
-using System.Collections;
+﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.Text;
+using BizApplication.Core.Common.CoreIF;
+using BizApplication.Core.Common.Error;
+using BizApplication.Core.Common.Util;
+
 
 namespace BizApplication.Core.Common.DI
 {
@@ -93,6 +92,11 @@ namespace BizApplication.Core.Common.DI
                         return false;
                     }
 
+                    if (t.resolverConfig.ConcreteType.IsPrimitive)
+                    {
+                        return false;
+                    }
+
                     if (!t.resolverConfig.AbstractType.IsClass && !t.resolverConfig.AbstractType.IsInterface)
                     {
                         return false;
@@ -139,10 +143,6 @@ namespace BizApplication.Core.Common.DI
 
         private void EmitNewObj(ResolverConfig resolverConfig, ILGenerator il)
         {
-            if (resolverConfig.ConcreteType.IsPrimitive)
-            {
-                throw new ContainerException("Primitive types are not supported");
-            }
             var ctorParams = resolverConfig.Constructor.GetParameters();
             {
                 foreach (var p in ctorParams)

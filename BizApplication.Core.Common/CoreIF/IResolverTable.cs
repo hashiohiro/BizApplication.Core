@@ -1,7 +1,6 @@
-﻿using BizApplication.Core.Common.DI;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using BizApplication.Core.Common.DI;
 
 namespace BizApplication.Core.Common.CoreIF
 {

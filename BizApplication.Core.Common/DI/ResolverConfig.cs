@@ -1,11 +1,8 @@
-﻿using BizApplication.Core.Common.Error;
-using BizApplication.Core.Common.Util;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Emit;
-using System.Text;
+using BizApplication.Core.Common.Error;
+
 
 namespace BizApplication.Core.Common.DI
 {
@@ -98,6 +95,7 @@ namespace BizApplication.Core.Common.DI
         private Lazy<PropertyInfo[]> properties;
         private Lazy<FieldInfo[]> fields;
         private Lazy<MethodInfo[]> methods;
+        private bool isThreadSafe = true;
         #endregion
 
         #region 初期化処理
@@ -107,12 +105,11 @@ namespace BizApplication.Core.Common.DI
             this.concreteType = concreteType;
             this.concreteTypeInfo = concreteType.GetTypeInfo();
 
-            constructor = new Lazy<ConstructorInfo>(() => GetUsingConstructor(concreteTypeInfo));
-            properties = new Lazy<PropertyInfo[]>(() => GetTargetProperties(concreteType));
-            fields = new Lazy<FieldInfo[]>(() => GetTargetFields(concreteType));
-            methods = new Lazy<MethodInfo[]>(() => GetTargetMethods(concreteType));
+            constructor = new Lazy<ConstructorInfo>(() => GetUsingConstructor(concreteTypeInfo), isThreadSafe);
+            properties = new Lazy<PropertyInfo[]>(() => GetTargetProperties(concreteType), isThreadSafe);
+            fields = new Lazy<FieldInfo[]>(() => GetTargetFields(concreteType), isThreadSafe);
+            methods = new Lazy<MethodInfo[]>(() => GetTargetMethods(concreteType), isThreadSafe);
         }
-
 
         #endregion
 

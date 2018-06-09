@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizApplication.Core.Data", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "ConsoleApp\ConsoleApp.csproj", "{AF86692D-430E-4E68-A389-AD634A9864E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BizApplication.Core.Test.Common", "BizApplication.Core.Test.Common\BizApplication.Core.Test.Common.csproj", "{A133A0E2-F8F7-4654-8B37-91072CF53A7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BizApplication.Core.Test.Common", "BizApplication.Core.Test.Common\BizApplication.Core.Test.Common.csproj", "{A133A0E2-F8F7-4654-8B37-91072CF53A7C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BizApplication.Core.Test", "BizApplication.Core.Test", "{E7F7ED28-9959-46BA-BBA0-CA04A5E4C739}"
 EndProject
