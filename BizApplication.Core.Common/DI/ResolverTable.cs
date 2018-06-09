@@ -93,7 +93,7 @@ namespace BizApplication.Core.Common.DI
                         return false;
                     }
 
-                    if (!t.resolverConfig.AbstractType.IsClass)
+                    if (!t.resolverConfig.AbstractType.IsClass && !t.resolverConfig.AbstractType.IsInterface)
                     {
                         return false;
                     }
@@ -103,14 +103,12 @@ namespace BizApplication.Core.Common.DI
                         return false;
                     }
 
-                    if (t.resolverConfig.ConcreteType.IsSubclassOf(t.resolverConfig.AbstractType))
+                    if (!ReferenceEquals(t.resolverConfig.AbstractType, t.resolverConfig.ConcreteType))
                     {
-                        return false;
-                    }
-
-                    if (AssertUtil.IsNull(t.resolverConfig.Constructor))
-                    {
-                        return false;
+                        if (!t.resolverConfig.ConcreteType.IsSubclassOf(t.resolverConfig.AbstractType))
+                        {
+                            return false;
+                        }
                     }
                 }
             }

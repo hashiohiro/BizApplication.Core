@@ -1,4 +1,5 @@
 ﻿using BizApplication.Core.Common.Error;
+using BizApplication.Core.Common.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,7 @@ namespace BizApplication.Core.Common.DI
         {
             get
             {
+                
                 return concreteTypeInfo;
             }
         }
@@ -48,7 +50,7 @@ namespace BizApplication.Core.Common.DI
         {
             get
             {
-                return constructor;
+                return constructor.Value;
             }
         }
 
@@ -59,7 +61,7 @@ namespace BizApplication.Core.Common.DI
         {
             get
             {
-                return properties;
+                return properties.Value;
             }
         }
 
@@ -70,7 +72,7 @@ namespace BizApplication.Core.Common.DI
         {
             get
             {
-                return fields;
+                return fields.Value;
             }
         }
 
@@ -81,7 +83,7 @@ namespace BizApplication.Core.Common.DI
         {
             get
             {
-                return methods;
+                return methods.Value;
             }
         }
 
@@ -92,10 +94,10 @@ namespace BizApplication.Core.Common.DI
         private Type abstractType;
         private Type concreteType;
         private TypeInfo concreteTypeInfo;
-        private ConstructorInfo constructor;
-        private PropertyInfo[] properties;
-        private FieldInfo[] fields;
-        private MethodInfo[] methods;
+        private Lazy<ConstructorInfo> constructor;
+        private Lazy<PropertyInfo[]> properties;
+        private Lazy<FieldInfo[]> fields;
+        private Lazy<MethodInfo[]> methods;
         #endregion
 
         #region 初期化処理
@@ -105,13 +107,10 @@ namespace BizApplication.Core.Common.DI
             this.concreteType = concreteType;
             this.concreteTypeInfo = concreteType.GetTypeInfo();
 
-            SetUsingConstructor(out constructor, concreteTypeInfo);
-
-            SetTargetFields(out fields, concreteType);
-
-            SetTargetProperty(out properties, concreteType);
-
-            SetTargetMethod(out methods, concreteType);
+            constructor = new Lazy<ConstructorInfo>(() => GetUsingConstructor(concreteTypeInfo));
+            properties = new Lazy<PropertyInfo[]>(() => GetTargetProperties(concreteType));
+            fields = new Lazy<FieldInfo[]>(() => GetTargetFields(concreteType));
+            methods = new Lazy<MethodInfo[]>(() => GetTargetMethods(concreteType));
         }
 
 
@@ -119,21 +118,20 @@ namespace BizApplication.Core.Common.DI
 
         #region Private処理
         /// <summary>
-        /// Extract the constructor defined based on type information and set it to a "Resolver configuration".
+        /// Get the metadata of the injected constructor.
         /// </summary>
-        /// <param name="ctor">Constructor</param>
         /// <param name="targetTypeInfo">Type infomation</param>
-        private void SetUsingConstructor(out ConstructorInfo ctor, TypeInfo targetTypeInfo)
+        private ConstructorInfo GetUsingConstructor(TypeInfo targetTypeInfo)
         {
             var ctors = targetTypeInfo.DeclaredConstructors.OrderByDescending(c => c.GetParameters().Length);
             var injectCtors = ctors.Where(c => c.GetCustomAttribute<InjectAttribute>() != null);
 
             if (injectCtors.Count() == 1)
             {
-                ctor = injectCtors.First();
+                return injectCtors.First();
             } else if (injectCtors.Count() == 0)
             {
-                ctor = ctors.FirstOrDefault();
+                return ctors.FirstOrDefault();
             } else
             {
                 throw new ContainerException("Multiple constructors can not be targeted for injection in the same class.");
@@ -141,33 +139,30 @@ namespace BizApplication.Core.Common.DI
         }
 
         /// <summary>
-        /// Extract the fields defined based on the type information and set it to a "Resolver configuration".
+        /// Get the metadata of the injected fields.
         /// </summary>
-        /// <param name="fields">Fields</param>
         /// <param name="targetType">Type infomation</param>
-        private void SetTargetFields(out FieldInfo[] fields, Type targetType)
+        private FieldInfo[] GetTargetFields(Type targetType)
         {
-            fields = targetType.GetRuntimeFields().Where(f => f.GetCustomAttribute<InjectAttribute>() != null).ToArray();
+            return targetType.GetRuntimeFields().Where(f => f.GetCustomAttribute<InjectAttribute>() != null).ToArray();
         }
 
         /// <summary>
-        /// Extract the properties defined based on the type information and set it to a "Resolver configuration".
+        /// Get the metadata of the injected properties.
         /// </summary>
-        /// <param name="properties">Properties</param>
         /// <param name="targetType">Type infomation</param>
-        private void SetTargetProperty(out PropertyInfo[] properties, Type targetType)
+        private PropertyInfo[] GetTargetProperties(Type targetType)
         {
-            properties = targetType.GetRuntimeProperties().Where(p => p.GetCustomAttribute<InjectAttribute>() != null).ToArray();
+            return targetType.GetRuntimeProperties().Where(p => p.GetCustomAttribute<InjectAttribute>() != null).ToArray();
         }
 
         /// <summary>
-        /// Extract the methods defined based on type information and set it to a "Resolver configuration".
+        /// Get the metadata of the injected methods.
         /// </summary>
-        /// <param name="methods">Methods</param>
         /// <param name="targetType">Type infomation</param>
-        private void SetTargetMethod(out MethodInfo[] methods, Type targetType)
+        private MethodInfo[] GetTargetMethods(Type targetType)
         {
-            methods = targetType.GetRuntimeMethods().Where(m => m.GetCustomAttribute<InjectAttribute>() != null).ToArray();
+            return targetType.GetRuntimeMethods().Where(m => m.GetCustomAttribute<InjectAttribute>() != null).ToArray();
         }
         #endregion
     }
